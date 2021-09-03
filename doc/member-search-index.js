@@ -1,0 +1,1 @@
+memberSearchIndex = [{"p":"pt.tooyummytogo.main","c":"ClienteExemplo","l":"ClienteExemplo()","url":"%3Cinit%3E()"},{"p":"pt.tooyummytogo.main","c":"ClienteExemplo","l":"main(String[])","url":"main(java.lang.String[])"}]
