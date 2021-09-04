@@ -17,8 +17,8 @@ public class Comerciante extends NovoUtilizador implements Observer {
 
 	private PosicaoCoordenadas localizacaoComerciante;
 	private List<TypeOfProduct> ltp = new ArrayList<>(); //lista tipos de produto
-	private List<Reserva> listaReservasC = new ArrayList<>();
-	private List<Produto> lp = new ArrayList<>();
+	private List<Reservation> listaReservasC = new ArrayList<>();
+	private List<Product> lp = new ArrayList<>();
 
 	public Comerciante(String username, String password, PosicaoCoordenadas localizacaoComerciante) {
 		super(username, password);
@@ -58,7 +58,7 @@ public class Comerciante extends NovoUtilizador implements Observer {
 		boolean verifica = false;
 		for(TypeOfProduct tp : ltp) {
 			if(tp.getName().contentEquals(nome)) {
-				Produto produto = new Produto(tp, quantidade);
+				Product produto = new Product(tp, quantidade);
 				lp.add(produto);
 				verifica = true;
 			}
@@ -75,7 +75,7 @@ public class Comerciante extends NovoUtilizador implements Observer {
 	 * @param horaFim
 	 */
 	public void confirma(LocalDateTime horaInicio, LocalDateTime horaFim) {
-		for(Produto p : lp) {
+		for(Product p : lp) {
 			if(p.getStartingTime() == null && p.getEndingTime() == null) {
 				p.setStartingTime(horaInicio);
 				p.setEndingTime(horaFim);
@@ -103,7 +103,7 @@ public class Comerciante extends NovoUtilizador implements Observer {
 	 * @return
 	 */
 	public boolean estaEmPeriodo(LocalDateTime horaInicio, LocalDateTime horaFim) {
-		for(Produto p: lp) {
+		for(Product p: lp) {
 			if(p.verificaPeriodo(horaInicio, horaFim)) {
 				return true;	
 			}
@@ -111,7 +111,7 @@ public class Comerciante extends NovoUtilizador implements Observer {
 		return false;
 	}
 
-	public List<Produto> getListaProdutos() {
+	public List<Product> getListaProdutos() {
 		return new ArrayList<>(lp);
 	}
 
@@ -126,8 +126,8 @@ public class Comerciante extends NovoUtilizador implements Observer {
 	public boolean produtoDisponivel(String nome, int quantidade) throws QuantidadeIndisponivelException {
 		int quant = 0;
 		boolean verifica = false;
-		for(Produto p : lp) {
-			if(p.getCodigo().equals(nome)) {
+		for(Product p : lp) {
+			if(p.getCode().equals(nome)) {
 				verifica = p.getQuantity() >= quantidade;
 				if(!verifica && quant < p.getQuantity()) {
 					quant = p.getQuantity();
@@ -145,16 +145,16 @@ public class Comerciante extends NovoUtilizador implements Observer {
 	 * @return
 	 * @requires produto existe
 	 */
-	public Produto getProduto(String nome) {
+	public Product getProduto(String nome) {
 		return  lp.stream()
-				.filter(p -> p.getCodigo().contentEquals(nome))
+				.filter(p -> p.getCode().contentEquals(nome))
 				.reduce((a, b) -> {
 					throw new IllegalStateException("Multiple elements: " + a + ", " + b);
 				})
 				.get();
 	}
 
-	public void adicionaReserva(Reserva r) {
+	public void adicionaReserva(Reservation r) {
 		listaReservasC.add(r);
 	}
 
@@ -164,10 +164,10 @@ public class Comerciante extends NovoUtilizador implements Observer {
 	 * @param horaFim
 	 * @return
 	 */
-	public List<Produto> getListaProdutosPeriodo(LocalDateTime horaInicio, LocalDateTime horaFim) {
+	public List<Product> getListaProdutosPeriodo(LocalDateTime horaInicio, LocalDateTime horaFim) {
 
-		ArrayList<Produto> listaProdutosPeriodo = new ArrayList<>();
-		for(Produto p: lp) {
+		ArrayList<Product> listaProdutosPeriodo = new ArrayList<>();
+		for(Product p: lp) {
 			if(p.verificaPeriodo(horaInicio,horaFim)) {
 				listaProdutosPeriodo.add(p);
 			}
@@ -175,7 +175,7 @@ public class Comerciante extends NovoUtilizador implements Observer {
 		return listaProdutosPeriodo;
 	}
 
-	public void update(Reserva reserva) {
+	public void update(Reservation reserva) {
 		this.adicionaReserva(reserva);
 		System.out.println(reserva.toString());
 	}
@@ -183,13 +183,13 @@ public class Comerciante extends NovoUtilizador implements Observer {
 	/**
 	 * Reduz as quantidades disponiveis dos produtos adquiridos na ultima compra
 	 */
-	public void reduzirQuantidades(Produto produto, int quantidade) {
+	public void reduzirQuantidades(Product produto, int quantidade) {
 		produto.decreaseQuantity(quantidade);
 		verificaQuantidade(produto);
 	}
 
-	private void verificaQuantidade(Produto produto) {
-		List<Produto> lista = this.lp;
+	private void verificaQuantidade(Product produto) {
+		List<Product> lista = this.lp;
 		if(produto.getQuantity() == 0) {
 			for(int i = 0; i < lista.size(); i++) {
 				if(produto.equals(lista.get(i))) {
@@ -199,9 +199,9 @@ public class Comerciante extends NovoUtilizador implements Observer {
 		}
 	}
 
-	public void adicionarQuantidades(Map<Produto, Integer> map) {
-		for(Produto p : lp) {
-			for(Entry<Produto, Integer> pr : map.entrySet()) {
+	public void adicionarQuantidades(Map<Product, Integer> map) {
+		for(Product p : lp) {
+			for(Entry<Product, Integer> pr : map.entrySet()) {
 				if(p.equals(pr.getKey())) {
 					p.devolveQuantidade(pr.getKey().getQuantity());
 				}

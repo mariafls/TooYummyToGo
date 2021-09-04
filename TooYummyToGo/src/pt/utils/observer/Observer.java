@@ -1,9 +1,9 @@
 package pt.utils.observer;
 
-import pt.tooyummytogo.domain.Reserva;
+import pt.tooyummytogo.domain.Reservation;
 
 public interface Observer {
 	
-	public void update(Reserva reserva);
+	public void update(Reservation reserva);
 
 }

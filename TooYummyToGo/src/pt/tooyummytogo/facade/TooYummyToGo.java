@@ -6,7 +6,7 @@ import pt.tooyummytogo.Sessao;
 import pt.tooyummytogo.domain.CatComerciante;
 import pt.tooyummytogo.domain.CatUtilizador;
 import pt.tooyummytogo.domain.Comerciante;
-import pt.tooyummytogo.domain.Utilizador;
+import pt.tooyummytogo.domain.User;
 import pt.tooyummytogo.facade.handlers.RegistarComercianteHandler;
 import pt.tooyummytogo.facade.handlers.RegistarUtilizadorHandler;
  
@@ -33,7 +33,7 @@ public class TooYummyToGo {
 	 */
 
 	public Optional<Sessao> autenticar(String username, String password) {
-		Optional<Utilizador> utilizador = catUtilizador.tryLogin(username, password);
+		Optional<User> utilizador = catUtilizador.tryLogin(username, password);
 		if(utilizador.isPresent()) {
 			return utilizador.map(u -> new Sessao(u, catComerciante));
 		}

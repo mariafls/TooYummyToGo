@@ -1,7 +1,7 @@
 package pt.utils.observer;
 
 import pt.tooyummytogo.domain.Comerciante;
-import pt.tooyummytogo.domain.Reserva;
+import pt.tooyummytogo.domain.Reservation;
 
 public abstract class Observable {
 	
@@ -11,7 +11,7 @@ public abstract class Observable {
 		this.observer = c;
 	}
 	
-	public void notifyObserver(Reserva reserva) {
+	public void notifyObserver(Reservation reserva) {
 		this.observer.update(reserva);
 	}
 

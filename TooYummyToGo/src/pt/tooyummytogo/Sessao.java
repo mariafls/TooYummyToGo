@@ -2,7 +2,7 @@ package pt.tooyummytogo;
 
 import pt.tooyummytogo.domain.CatComerciante;
 import pt.tooyummytogo.domain.Comerciante;
-import pt.tooyummytogo.domain.Utilizador;
+import pt.tooyummytogo.domain.User;
 import pt.tooyummytogo.exceptions.NaoEhComercianteException;
 import pt.tooyummytogo.exceptions.NaoEhUtilizadorException;
 import pt.tooyummytogo.facade.handlers.AdicionarTipoDeProdutoHandler;
@@ -11,11 +11,11 @@ import pt.tooyummytogo.facade.handlers.EncomendarHandler;
 
 public class Sessao {
 
-	private Utilizador currentUtilizador;
+	private User currentUtilizador;
 	private CatComerciante currentCatComerciante;
 	private Comerciante currentComerciante;
 
-	public Sessao(Utilizador u, CatComerciante catComerciante) {
+	public Sessao(User u, CatComerciante catComerciante) {
 		this.currentUtilizador = u;
 		this.currentCatComerciante = catComerciante;
 	}

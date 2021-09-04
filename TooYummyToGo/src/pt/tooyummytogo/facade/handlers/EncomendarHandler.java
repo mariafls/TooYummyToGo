@@ -6,9 +6,9 @@ import java.util.stream.Collectors;
 
 import pt.tooyummytogo.domain.CatComerciante;
 import pt.tooyummytogo.domain.Comerciante;
-import pt.tooyummytogo.domain.Produto;
-import pt.tooyummytogo.domain.Reserva;
-import pt.tooyummytogo.domain.Utilizador;
+import pt.tooyummytogo.domain.Product;
+import pt.tooyummytogo.domain.Reservation;
+import pt.tooyummytogo.domain.User;
 import pt.tooyummytogo.exceptions.ListaVaziaException;
 import pt.tooyummytogo.exceptions.PagamentoRecusadoException;
 import pt.tooyummytogo.exceptions.QuantidadeIndisponivelException;
@@ -24,11 +24,11 @@ public class EncomendarHandler {
 	private LocalDateTime horaInicio;
 	private LocalDateTime horaFim;
 	private Comerciante comercianteAtual;
-	private Utilizador utilizadorAtual;
+	private User utilizadorAtual;
 	private static final int RAIO = 5;
 
 
-	public EncomendarHandler(CatComerciante catComerciantes, Utilizador currentUtilizador) {
+	public EncomendarHandler(CatComerciante catComerciantes, User currentUtilizador) {
 		this.catComerciantes = catComerciantes;
 		this.utilizadorAtual = currentUtilizador;
 	}
@@ -94,7 +94,7 @@ public class EncomendarHandler {
 				this.comercianteAtual = c;
 			}
 		}
-		this.utilizadorAtual.iniciaCompra();
+		this.utilizadorAtual.beginPurchase();
 		if(this.horaFim != null && this.horaInicio != null) {
 			return this.comercianteAtual.getListaProdutosPeriodo(this.horaInicio, this.horaFim).stream().map(c -> new ProdutoInfo(c.getName(), c.getStartingTime(), c.getEndingTime())).collect(Collectors.toList());
 
@@ -107,8 +107,8 @@ public class EncomendarHandler {
 	 */
 	public void indicaProduto(ProdutoInfo p, int quantidade) throws QuantidadeIndisponivelException, CloneNotSupportedException {
 		if(this.comercianteAtual.produtoDisponivel(p.getCodigo(), quantidade)) {
-			Produto produto = this.comercianteAtual.getProduto(p.getCodigo());
-			this.utilizadorAtual.adicionaProduto(produto, quantidade);
+			Product produto = this.comercianteAtual.getProduto(p.getCodigo());
+			this.utilizadorAtual.addProduct(produto, quantidade);
 			this.comercianteAtual.reduzirQuantidades(produto, quantidade); 
 		}
 
@@ -122,8 +122,8 @@ public class EncomendarHandler {
 	public String indicaPagamento(String cartao, String validade, String cvv) throws PagamentoRecusadoException {
 		String codigo = "";
 
-		if(this.utilizadorAtual.pagamento(cartao, validade, cvv)) {
-			Reserva r = this.utilizadorAtual.criarReserva(this.comercianteAtual, this.utilizadorAtual.getTotalCompras());
+		if(this.utilizadorAtual.payment(cartao, validade, cvv)) {
+			Reservation r = this.utilizadorAtual.criarReserva(this.comercianteAtual, this.utilizadorAtual.getTotalCompras());
 			codigo = r.getCodigo();
 		} else {
 			this.comercianteAtual.adicionarQuantidades(this.utilizadorAtual.getListaCompras());
