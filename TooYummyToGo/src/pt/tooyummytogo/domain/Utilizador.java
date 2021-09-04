@@ -46,7 +46,7 @@ public class Utilizador extends NovoUtilizador {
 		Double contador = 0.0;
 
 		for (Entry<Produto, Integer> entry : listaCompras.entrySet()) {
-			Double preco = entry.getKey().getPreco();
+			Double preco = entry.getKey().getPrice();
 			int quantidade = entry.getValue();
 			contador += preco*quantidade;
 		}

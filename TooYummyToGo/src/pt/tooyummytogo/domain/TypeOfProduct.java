@@ -1,25 +1,25 @@
 package pt.tooyummytogo.domain;
 
-public class TipoDeProduto {
+public class TypeOfProduct {
 	 
-	private String nome;
-	private double preco;
+	private String name;
+	private double price;
 
-	public TipoDeProduto(String tp, double d) {
-		this.nome = tp;
-		this.preco = d;
+	public TypeOfProduct(String tp, double d) {
+		this.name = tp;
+		this.price = d;
 	}
 	
-	public TipoDeProduto(String tp) {
-		this.nome = tp;
+	public TypeOfProduct(String tp) {
+		this.name = tp;
 	}
 	
-	public double getPreco() {
-		return preco;
+	public double getPrice() {
+		return price;
 	}
 	
-	public String getNome() {
-		return nome;
+	public String getName() {
+		return name;
 	}
 	
 	@Override
@@ -30,11 +30,11 @@ public class TipoDeProduto {
 		if (obj == null) {
 			return false;
 		}
-		if (!(obj instanceof TipoDeProduto)) {
+		if (!(obj instanceof TypeOfProduct)) {
 			return false;
 		}
-		TipoDeProduto other = (TipoDeProduto) obj;
-		return nome == other.nome && preco == other.preco;
+		TypeOfProduct other = (TypeOfProduct) obj;
+		return name == other.name && price == other.price;
 	}
 
 }

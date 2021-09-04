@@ -96,10 +96,10 @@ public class EncomendarHandler {
 		}
 		this.utilizadorAtual.iniciaCompra();
 		if(this.horaFim != null && this.horaInicio != null) {
-			return this.comercianteAtual.getListaProdutosPeriodo(this.horaInicio, this.horaFim).stream().map(c -> new ProdutoInfo(c.getNome(), c.getHoraInicio(), c.getHoraFim())).collect(Collectors.toList());
+			return this.comercianteAtual.getListaProdutosPeriodo(this.horaInicio, this.horaFim).stream().map(c -> new ProdutoInfo(c.getName(), c.getStartingTime(), c.getEndingTime())).collect(Collectors.toList());
 
 		}
-		return this.comercianteAtual.getListaProdutos().stream().map(c -> new ProdutoInfo(c.getNome(), c.getHoraInicio(), c.getHoraFim())).collect(Collectors.toList());
+		return this.comercianteAtual.getListaProdutos().stream().map(c -> new ProdutoInfo(c.getName(), c.getStartingTime(), c.getEndingTime())).collect(Collectors.toList());
 	}
 
 	/**

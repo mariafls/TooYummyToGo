@@ -51,7 +51,7 @@ public class Reserva extends Observable {
 		sb.append("Encomenda: " + this.getCodigo() + "\n");
 		sb.append("Cliente: " + this.utilizador.getName() + "\nComerciante: " + super.observer.getName() +  "\n");
 		for (Entry<Produto, Integer> entry : listaCompras.entrySet()) {
-			sb.append(entry.getKey().getNome() + " " + entry.getValue().toString() + "\n");
+			sb.append(entry.getKey().getName() + " " + entry.getValue().toString() + "\n");
 		}
 		sb.append("Estado: " + this.estado + "\n");
 		return sb.toString();
