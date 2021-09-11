@@ -5,25 +5,25 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import pt.tooyummytogo.domain.CatComerciante;
-import pt.tooyummytogo.domain.Comerciante;
 import pt.tooyummytogo.domain.Product;
 import pt.tooyummytogo.domain.Reservation;
+import pt.tooyummytogo.domain.Seller;
 import pt.tooyummytogo.domain.User;
+import pt.tooyummytogo.exception.QuantityNotAvailableException;
 import pt.tooyummytogo.exceptions.ListaVaziaException;
 import pt.tooyummytogo.exceptions.PagamentoRecusadoException;
-import pt.tooyummytogo.exceptions.QuantidadeIndisponivelException;
 import pt.tooyummytogo.facade.dto.ComercianteInfo;
-import pt.tooyummytogo.facade.dto.PosicaoCoordenadas;
+import pt.tooyummytogo.facade.dto.CoordinatesPosition;
 import pt.tooyummytogo.facade.dto.ProdutoInfo;
 
 public class EncomendarHandler {
 
 	private CatComerciante catComerciantes;
-	private PosicaoCoordenadas localizacaoAtual;
-	private List<Comerciante>listaComerciantesAtual;
+	private CoordinatesPosition localizacaoAtual;
+	private List<Seller>listaComerciantesAtual;
 	private LocalDateTime horaInicio;
 	private LocalDateTime horaFim;
-	private Comerciante comercianteAtual;
+	private Seller currentSeller;
 	private User utilizadorAtual;
 	private static final int RAIO = 5;
 
@@ -40,7 +40,7 @@ public class EncomendarHandler {
 	 * @throws ListaVaziaException 
 	 * @requires coordenadas != null
 	 */
-	public List<ComercianteInfo> indicaLocalizacaoActual(PosicaoCoordenadas coordenadas) throws ListaVaziaException {
+	public List<ComercianteInfo> indicaLocalizacaoActual(CoordinatesPosition coordenadas) throws ListaVaziaException {
 		this.localizacaoAtual = coordenadas;
 
 		return pesquisa(RAIO);
@@ -89,27 +89,28 @@ public class EncomendarHandler {
 	 */
 	public List<ProdutoInfo> escolheComerciante(ComercianteInfo comercianteInfo) {
 
-		for(Comerciante c : listaComerciantesAtual) {
+		for(Seller c : listaComerciantesAtual) {
 			if(c.getName().contentEquals(comercianteInfo.toString())) {
-				this.comercianteAtual = c;
+				this.currentSeller = c;
 			}
 		}
 		this.utilizadorAtual.beginPurchase();
 		if(this.horaFim != null && this.horaInicio != null) {
-			return this.comercianteAtual.getListaProdutosPeriodo(this.horaInicio, this.horaFim).stream().map(c -> new ProdutoInfo(c.getName(), c.getStartingTime(), c.getEndingTime())).collect(Collectors.toList());
+			return this.currentSeller.getProductListInPeriod(this.horaInicio, this.horaFim).stream().map(c -> new ProdutoInfo(c.getName(), c.getStartingTime(), c.getEndingTime())).collect(Collectors.toList());
 
 		}
-		return this.comercianteAtual.getListaProdutos().stream().map(c -> new ProdutoInfo(c.getName(), c.getStartingTime(), c.getEndingTime())).collect(Collectors.toList());
+		return this.currentSeller.getProductsList().stream().map(c -> new ProdutoInfo(c.getName(), c.getStartingTime(), c.getEndingTime())).collect(Collectors.toList());
 	}
 
 	/**
 	 * Adiciona produto a lista de compras e reduz a quantidade disponivel desse produto
+	 * @throws QuantityNotAvailableException 
 	 */
-	public void indicaProduto(ProdutoInfo p, int quantidade) throws QuantidadeIndisponivelException, CloneNotSupportedException {
-		if(this.comercianteAtual.produtoDisponivel(p.getCodigo(), quantidade)) {
-			Product produto = this.comercianteAtual.getProduto(p.getCodigo());
+	public void indicaProduto(ProdutoInfo p, int quantidade) throws CloneNotSupportedException, QuantityNotAvailableException {
+		if(this.currentSeller.productAvailable(p.getCodigo(), quantidade)) {
+			Product produto = this.currentSeller.getProduct(p.getCodigo());
 			this.utilizadorAtual.addProduct(produto, quantidade);
-			this.comercianteAtual.reduzirQuantidades(produto, quantidade); 
+			this.currentSeller.decreaseQuantity(produto, quantidade); 
 		}
 
 	}
@@ -123,10 +124,11 @@ public class EncomendarHandler {
 		String codigo = "";
 
 		if(this.utilizadorAtual.payment(cartao, validade, cvv)) {
-			Reservation r = this.utilizadorAtual.criarReserva(this.comercianteAtual, this.utilizadorAtual.getTotalCompras());
+			Reservation r = new Reservation(this.utilizadorAtual, this.currentSeller, this.utilizadorAtual.getTotalCompras());
+			this.utilizadorAtual.criarReserva(r);
 			codigo = r.getCodigo();
 		} else {
-			this.comercianteAtual.adicionarQuantidades(this.utilizadorAtual.getListaCompras());
+			this.currentSeller.addQuantity(this.utilizadorAtual.getListaCompras());
 			throw new PagamentoRecusadoException();
 		}
 
