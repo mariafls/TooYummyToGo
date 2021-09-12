@@ -1,13 +1,13 @@
 package pt.utils.observer;
 
-import pt.tooyummytogo.domain.Comerciante;
+import pt.tooyummytogo.domain.Seller;
 import pt.tooyummytogo.domain.Reservation;
 
 public abstract class Observable {
 	
-	protected Comerciante observer;
+	protected Seller observer;
 	
-	public void addObserver(Comerciante c) {
+	public void addObserver(Seller c) {
 		this.observer = c;
 	}
 	

@@ -15,13 +15,17 @@ public class Reservation extends Observable {
 	private Map<Product, Integer> shoppingList;
 	private double total;
 	
-	public Reservation(User user, Comerciante comercianteAtual, Map<Product, Integer> listaCompras, double total) {
-		super.addObserver(comercianteAtual);
+	public Reservation(User user, Seller currentSeller, double total) {
+		super.addObserver(currentSeller);
 		this.user = user;
-		this.code = this.user.getName() + comercianteAtual.getName() + LocalDateTime.now().toString();
+		this.code = this.user.getName() + currentSeller.getName() + LocalDateTime.now().toString();
 		this.state = "pendente";
-		this.shoppingList = listaCompras;
+		this.shoppingList = null;
 		this.total = total;
+	}
+	
+	public void setShoppingList(Map<Product, Integer> shoppingList) {
+		this.shoppingList = shoppingList;
 	}
 
 	public String getCodigo() {

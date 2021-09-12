@@ -7,7 +7,7 @@ import java.util.Map.Entry;
 import pt.tooyummytogo.pagamento.Configuration;
 import pt.tooyummytogo.pagamento.MetodoDePagamento;
 
-public class User extends NovoUtilizador {
+public class User extends NewUser {
 
 	private Map<Product, Integer> shoppingList;
 	private ArrayList<Reservation> reservationList = new ArrayList<>();
@@ -24,8 +24,8 @@ public class User extends NovoUtilizador {
 		shoppingList.put((Product) product.clone(), quantidade);
 	}
 
-	public Reservation criarReserva(Comerciante comercianteAtual, double total) {
-		Reservation r = new Reservation(this, comercianteAtual, new HashMap<> (this.shoppingList), total);
+	public Reservation criarReserva(Reservation r) {
+		r.setShoppingList(new HashMap<> (this.shoppingList));
 		reservationList.add(r);
 		r.notifyObserver(r);
 		return r;
